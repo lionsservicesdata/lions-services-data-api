@@ -65,6 +65,17 @@ async function scanQR(data) {
   }
 }
 
+async function getMaxID() {
+  try {
+    let pool = await sql.connect(config);
+    let rows = await pool.request().query('SELECT MAX(id) FROM QR');
+    return rows.recordsets;
+  }
+  catch (error) {
+    console.log(error);
+  }
+}
+
 // Post Helper Functions
 async function postProduction_System(data) {
   console.log(data)
@@ -251,7 +262,7 @@ async function deleteControl_Stations(data) {
 }
 
 //==========================================================
-//Misc Post Requests
+//Misc Requests
 
 app.post('/QRSCAN', function (req, res) {
   console.log('QR SCAN RECEIVED')
@@ -260,6 +271,15 @@ app.post('/QRSCAN', function (req, res) {
   res.end();
   console.log('QR SCAN SUCCESSFUL')
 });
+
+app.get('/MaxID', (req, res) => {
+  console.log('GET Request Received')
+  getMaxID().then((data) => {
+    res.send(data[0]);
+  })
+  console.log('GET Response Sent')
+});
+
 
 //POST Requests for Rows
 
@@ -320,7 +340,7 @@ app.post('/Update_Control_Stations', function (req, res) {
   console.log('STATION SUCCESSFULY UPDATED')
 });
 
-//DELETE Requests for Updating Rows
+//POST Requests for Deleting Rows
 app.post('/Delete_Production_Systems', function (req, res) {
   console.log('DELETE PRODUCTION SYSTEM SUCCESSFULY RECEIVED')
   let data = { ...req.body }
@@ -409,6 +429,3 @@ app.get('/Lots_List', (req, res) => {
 app.listen(3001, function () {
   console.log('server is running on port 3001');
 })
-
-
-app.listen(3001, '10.0.0.130')
