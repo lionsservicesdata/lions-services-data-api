@@ -97,6 +97,7 @@ async function postLots(data) {
   console.log(data)
   try {
     let pool = await sql.connect(config);
+    //Potentially Iterate over input with data. Data becomes huge array of all of them.
     let input = await pool.request()
       .input('production_system_name', sql.NVarChar, data.production_system_name)
       .input('lot_number', sql.Int, data.lot_number)
@@ -246,20 +247,6 @@ async function deleteLots(data) {
   }
 }
 
-async function deleteLots(data) {
-  console.log(data)
-  try {
-    let pool = await sql.connect(config);
-    let input = await pool.request()
-      .input('production_system_name', sql.NVarChar, data.production_system_name)
-      .input('lot_number', sql.Int, data.lot_number)
-      .query('DELETE FROM Lots WHERE production_system_name = @production_system_name AND lot_number = @lot_number')
-    return input.recordsets;
-  }
-  catch (error) {
-    console.log(error);
-  }
-}
 async function deleteQRLot(data) {
   console.log(data)
   try {
@@ -274,7 +261,6 @@ async function deleteQRLot(data) {
     console.log(error);
   }
 }
-
 
 async function deleteControl_Stations(data) {
   console.log(data)
@@ -309,7 +295,6 @@ app.get('/MaxID', (req, res) => {
   })
   console.log('GET Response Sent')
 });
-
 
 //POST Requests for Rows
 
