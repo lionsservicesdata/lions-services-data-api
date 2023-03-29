@@ -238,8 +238,6 @@ async function deleteLots(data) {
   }
 }
 
-<<<<<<< Updated upstream
-=======
 async function deleteLots(data) {
   console.log(data)
   try {
@@ -255,7 +253,6 @@ async function deleteLots(data) {
   }
 }
 
->>>>>>> Stashed changes
 async function deleteQRLot(data) {
   console.log(data)
   try {
