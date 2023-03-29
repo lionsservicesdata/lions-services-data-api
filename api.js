@@ -42,17 +42,6 @@ async function getTable(tableName) {
   }
 }
 
-async function getSelectEntries(tableName, colname) {
-  try {
-    let pool = await sql.connect(config);
-    let rows = await pool.request().query('SELECT DISTINCT ' + colname + ' FROM ' + tableName);
-    return rows.recordsets;
-  }
-  catch (error) {
-    console.log(error);
-  }
-}
-
 async function scanQR(data) {
   console.log(data)
   try {
@@ -110,7 +99,8 @@ async function postLots(data) {
       .input('due_date', sql.DateTime, data.due_date)
       .input('customer', sql.NVarChar, data.customer)
       .input('customer_name', sql.NVarChar, data.customer_name)
-      .query('INSERT INTO Lots Values (@production_system_name, @lot_number, @line_number, @order_ref, @order_size, @date_entered, @order_date, @lot_date, @due_date, @customer, @customer_name)')
+      .input('is_printed', sql.Int, data.is_printed)
+      .query('INSERT INTO Lots Values (@production_system_name, @lot_number, @line_number, @order_ref, @order_size, @date_entered, @order_date, @lot_date, @due_date, @customer, @customer_name, @is_printed)')
     return input.recordsets;
   }
   catch (error) {
@@ -191,7 +181,8 @@ async function updateLots(data) {
       .input('due_date', sql.DateTime, data.due_date)
       .input('customer', sql.NVarChar, data.customer)
       .input('customer_name', sql.NVarChar, data.customer_name)
-      .query('UPDATE Lots SET line_number = @line_number, order_ref = @order_ref, order_size = @order_size, date_entered = @date_entered, order_date = @order_date, lot_date = @lot_date, due_date = @due_date, customer = @customer, customer_name = @customer_name WHERE production_system_name = @production_system_name AND lot_number = @lot_number')
+      .input('is_printed', sql.Int, data.is_printed)
+      .query('UPDATE Lots SET line_number = @line_number, order_ref = @order_ref, order_size = @order_size, date_entered = @date_entered, order_date = @order_date, lot_date = @lot_date, due_date = @due_date, customer = @customer, customer_name = @customer_name, is_printed = @is_printed WHERE production_system_name = @production_system_name AND lot_number = @lot_number')
     return input.recordsets;
   }
   catch (error) {
