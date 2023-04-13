@@ -65,6 +65,25 @@ async function getMaxID() {
   }
 }
 
+async function Upload_Lots(data) {
+  data.forEach((Lot) => {
+    postLots(Lot)
+    createQRLot(Lot)
+  }
+  )
+}
+
+async function createQRLot(lot) {
+  try {
+    let pool = await sql.connect(config);
+    let input = await pool.request()
+    
+  }
+  catch(error) {
+    console.log(error)
+  }
+}
+
 // Post Helper Functions
 async function postProduction_System(data) {
   console.log(data)
@@ -83,24 +102,30 @@ async function postProduction_System(data) {
 }
 
 async function postLots(data) {
-  console.log(data)
   try {
     let pool = await sql.connect(config);
     //Potentially Iterate over input with data. Data becomes huge array of all of them.
     let input = await pool.request()
-      .input('production_system_name', sql.NVarChar, data.production_system_name)
-      .input('lot_number', sql.Int, data.lot_number)
-      .input('line_number', sql.Int, data.line_number)
-      .input('order_ref', sql.Int, data.order_ref)
-      .input('order_size', sql.Int, data.order_size)
-      .input('date_entered', sql.DateTime, data.date_entered)
-      .input('order_date', sql.DateTime, data.order_date)
-      .input('lot_date', sql.DateTime, data.lot_date)
-      .input('due_date', sql.DateTime, data.due_date)
+      .input('lot_number', sql.NVarChar, data.lot_number)
+      .input('order', sql.NVarChar, data.order)
+      .input('order_date', sql.NVarChar, data.order_date)
+      .input('clin', sql.NVarChar, data.clin)
+      .input('nsn_number', sql.NVarChar, data.nsn_number)
+      .input('item_number', sql.NVarChar, data.item_number)
+      .input('item_description', sql.NVarChar, data.item_description)
+      .input('qty_ordered', sql.NVarChar, data.qty_ordered)
+      .input('u_m', sql.NVarChar, data.u_m)
+      .input('due_date', sql.NVarChar, data.due_date)
       .input('customer', sql.NVarChar, data.customer)
-      .input('customer_name', sql.NVarChar, data.customer_name)
+      .input('contract_number', sql.NVarChar, data.contract_number)
+      .input('date_open', sql.NVarChar, data.date_open)
+      .input('date_start', sql.NVarChar, data.date_start)
+      .input('date_closed', sql.NVarChar, data.date_closed)
+      .input('status', sql.NVarChar, data.status)
+      .input('comments', sql.NVarChar, data.comments)
       .input('is_printed', sql.Int, data.is_printed)
-      .query('INSERT INTO Lots Values (@production_system_name, @lot_number, @line_number, @order_ref, @order_size, @date_entered, @order_date, @lot_date, @due_date, @customer, @customer_name, @is_printed)')
+      .input('production_system_name', sql.NVarChar, data.production_system_name)
+      .query('INSERT INTO Lots Values (@lot_number, @order, @order_date, @clin, @nsn_number, @item_number, @item_description, @qty_ordered, @u_m, @due_date, @customer, @contract_number, @date_open, @date_start, @date_closed, @status, @comments, @is_printed, @production_system_name)')
     return input.recordsets;
   }
   catch (error) {
@@ -170,19 +195,26 @@ async function updateLots(data) {
   try {
     let pool = await sql.connect(config);
     let input = await pool.request()
-      .input('production_system_name', sql.NVarChar, data.production_system_name)
-      .input('lot_number', sql.Int, data.lot_number)
-      .input('line_number', sql.Int, data.line_number)
-      .input('order_ref', sql.Int, data.order_ref)
-      .input('order_size', sql.Int, data.order_size)
-      .input('date_entered', sql.DateTime, data.date_entered)
-      .input('order_date', sql.DateTime, data.order_date)
-      .input('lot_date', sql.DateTime, data.lot_date)
-      .input('due_date', sql.DateTime, data.due_date)
+      .input('lot_number', sql.NVarChar, data.lot_number)
+      .input('order_', sql.NVarChar, data.order)
+      .input('order_date', sql.NVarChar, data.order_date)
+      .input('clin', sql.NVarChar, data.clin)
+      .input('nsn_number', sql.NVarChar, data.nsn_number)
+      .input('item_number', sql.NVarChar, data.item_number)
+      .input('item_description', sql.NVarChar, data.item_description)
+      .input('qty_ordered', sql.NVarChar, data.qty_ordered)
+      .input('u_m', sql.NVarChar, data.u_m)
+      .input('due_date', sql.NVarChar, data.due_date)
       .input('customer', sql.NVarChar, data.customer)
-      .input('customer_name', sql.NVarChar, data.customer_name)
+      .input('contract_number', sql.NVarChar, data.contract_number)
+      .input('date_open', sql.NVarChar, data.date_open)
+      .input('date_start', sql.NVarChar, data.date_start)
+      .input('date_closed', sql.NVarChar, data.date_closed)
+      .input('status_', sql.NVarChar, data.status)
+      .input('comments', sql.NVarChar, data.comments)
       .input('is_printed', sql.Int, data.is_printed)
-      .query('UPDATE Lots SET line_number = @line_number, order_ref = @order_ref, order_size = @order_size, date_entered = @date_entered, order_date = @order_date, lot_date = @lot_date, due_date = @due_date, customer = @customer, customer_name = @customer_name, is_printed = @is_printed WHERE production_system_name = @production_system_name AND lot_number = @lot_number')
+      .input('production_system_name', sql.NVarChar, data.production_system_name)
+      .query('UPDATE Lots SET lot_number = @lot_number, order_ = @order_ ,order_date = @order_date, clin = @clin, nsn_number = @nsn_number, item_number = @item_number, item_description = @item_description, qty_ordered = @qty_ordered, u_m = @u_m, due_date = @due_date, customer = @customer, contract_number = @contract_number, date_open = @date_open, date_start = @date_start, date_closed = @date_closed, status_ = @status_, comments = @comments, is_printed = @is_printed, production_system_name = @production_system_name WHERE lot_number = @lot_number')
     return input.recordsets;
   }
   catch (error) {
@@ -238,21 +270,6 @@ async function deleteLots(data) {
   }
 }
 
-async function deleteLots(data) {
-  console.log(data)
-  try {
-    let pool = await sql.connect(config);
-    let input = await pool.request()
-      .input('production_system_name', sql.NVarChar, data.production_system_name)
-      .input('lot_number', sql.Int, data.lot_number)
-      .query('DELETE FROM Lots WHERE production_system_name = @production_system_name AND lot_number = @lot_number')
-    return input.recordsets;
-  }
-  catch (error) {
-    console.log(error);
-  }
-}
-
 async function deleteQRLot(data) {
   console.log(data)
   try {
@@ -261,6 +278,21 @@ async function deleteQRLot(data) {
       .input('production_system_name', sql.NVarChar, data.production_system_name)
       .input('lot_number', sql.Int, data.lot_number)
       .query('DELETE FROM QR WHERE production_system_name = @production_system_name AND lot_number = @lot_number')
+    return input.recordsets;
+  }
+  catch (error) {
+    console.log(error);
+  }
+}
+
+async function deleteProduction_SystemControl_Stations(data) {
+  console.log(data)
+  try {
+    let pool = await sql.connect(config);
+    let input = await pool.request()
+      .input('station_name', sql.NVarChar, data.station_name)
+      .input('production_system_name', sql.NVarChar, data.production_system_name)
+      .query('DELETE FROM Control_Stations WHERE production_system_name = @production_system_name')
     return input.recordsets;
   }
   catch (error) {
@@ -302,8 +334,15 @@ app.get('/MaxID', (req, res) => {
   console.log('GET Response Sent')
 });
 
-//POST Requests for Rows
+app.post('/Upload_Lots', function (req, res) {
+  console.log('LOT SHEET UPLOADED')
+  let data = { ...req.body }
+  Upload_Lots(data[0])
+  res.end();
+  console.log('LOT SHEET UPLOADED')
+})
 
+//POST Requests for Rows
 app.post('/Production_Systems', function (req, res) {
   console.log('NEW PRODUCTION SYSTEM SUCCESSFULY RECEIVED')
   let data = { ...req.body }
@@ -366,6 +405,7 @@ app.post('/Delete_Production_Systems', function (req, res) {
   console.log('DELETE PRODUCTION SYSTEM SUCCESSFULY RECEIVED')
   let data = { ...req.body }
   deleteProduction_System(data)
+  deleteProduction_SystemControl_Stations(data)
   res.end();
   console.log('PRODUCTION SYSTEM SUCCESSFULY DELETED')
 });
@@ -420,32 +460,6 @@ app.get('/Lots', (req, res) => {
   })
   console.log('GET Response Sent')
 });
-
-//GET Requests for SELECT
-app.get('/Production_Systems_List', (req, res) => {
-  console.log('GET Request Received')
-  getSelectEntries('Production_Systems', 'production_system_name').then((data) => {
-    res.send(data[0]);
-  })
-  console.log('GET Response Sent')
-});
-
-app.get('/Control_Stations_List', (req, res) => {
-  console.log('GET Request Received')
-  getSelectEntries('Control_Stations', 'station_name').then((data) => {
-    res.send(data[0]);
-  })
-  console.log('GET Response Sent')
-});
-
-app.get('/Lots_List', (req, res) => {
-  console.log('GET Request Received')
-  getSelectEntries('Lots', 'lot_number').then((data) => {
-    res.send(data[0]);
-  })
-  console.log('GET Response Sent')
-});
-
 
 //API END\\
 app.listen(3001, function () {
