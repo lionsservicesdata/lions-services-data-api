@@ -66,13 +66,9 @@ async function getMaxID() {
 }
 
 async function Upload_Lots(data) {
-  data.forEach(Lot => {
-    Lot.get('Lot #')
-    console.log(Lot)
-    postLots(Lot)
-    createQRLot(Lot)
-  }
-  )
+  //data.forEach(Lot => {
+    //console.log(Lot.Customer)
+  //})
 }
 
 async function createQRLot(lot) {
@@ -339,7 +335,7 @@ app.get('/MaxID', (req, res) => {
 app.post('/Upload_Lots', function (req, res) {
   console.log('LOT SHEET UPLOADED')
   let data = { ...req.body }
-  console.log(data[0])
+  console.log(data[252])
   Upload_Lots(data[0])
   res.end();
   console.log('LOT SHEET UPLOADED')
