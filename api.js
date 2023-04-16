@@ -67,7 +67,7 @@ async function getMaxID() {
 
 async function Upload_Lots(data) {
   const length = Object.keys(data).length
-  for(let i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     data[i].is_printed = 0
     data[i].qr_lot_generated = 0
     postLots(data[i])
@@ -78,9 +78,9 @@ async function createQRLot(lot) {
   try {
     let pool = await sql.connect(config);
     let input = await pool.request()
-    
+
   }
-  catch(error) {
+  catch (error) {
     console.log(error)
   }
 }
@@ -198,26 +198,26 @@ async function updateLots(data) {
   try {
     let pool = await sql.connect(config);
     let input = await pool.request()
-      .input('lot_number', sql.NVarChar, data.lot_number)
-      .input('order_', sql.NVarChar, data.order)
-      .input('order_date', sql.NVarChar, data.order_date)
-      .input('clin', sql.NVarChar, data.clin)
-      .input('nsn_number', sql.NVarChar, data.nsn_number)
-      .input('item_number', sql.NVarChar, data.item_number)
-      .input('item_description', sql.NVarChar, data.item_description)
-      .input('qty_ordered', sql.NVarChar, data.qty_ordered)
-      .input('u_m', sql.NVarChar, data.u_m)
-      .input('due_date', sql.NVarChar, data.due_date)
-      .input('customer', sql.NVarChar, data.customer)
-      .input('contract_number', sql.NVarChar, data.contract_number)
-      .input('date_open', sql.NVarChar, data.date_open)
-      .input('date_start', sql.NVarChar, data.date_start)
-      .input('date_closed', sql.NVarChar, data.date_closed)
-      .input('status_', sql.NVarChar, data.status)
-      .input('comments', sql.NVarChar, data.comments)
+      .input('lot_number', sql.NVarChar, String(data.lot_number))
+      .input('order_', sql.NVarChar, String(data.order_))
+      .input('order_date', sql.NVarChar, String(data.order_date))
+      .input('clin', sql.NVarChar, String(data.clin))
+      .input('nsn_number', sql.NVarChar, String(data.nsn_number))
+      .input('item_number', sql.NVarChar, String(data.item_number))
+      .input('item_description', sql.NVarChar, String(data.item_description))
+      .input('qty_ordered', sql.NVarChar, String(data.qty_ordered))
+      .input('u_m', sql.NVarChar, String(data.u_m))
+      .input('due_date', sql.NVarChar, String(data.due_date))
+      .input('customer', sql.NVarChar, String(data.customer))
+      .input('contract_number', sql.NVarChar, String(data.contract_number))
+      .input('date_open', sql.NVarChar, String(data.date_open))
+      .input('date_start', sql.NVarChar, String(data.date_start))
+      .input('date_closed', sql.NVarChar, String(data.date_closed))
+      .input('status_', sql.NVarChar, String(data.status_))
+      .input('comments', sql.NVarChar, String(data.comments))
       .input('qr_lot_generated', sql.Int, data.qr_lot_generated)
       .input('is_printed', sql.Int, data.is_printed)
-      .input('production_system_name', sql.NVarChar, data.production_system_name)
+      .input('production_system_name', String(sql.NVarChar, data.production_system_name))
       .query('UPDATE Lots SET lot_number = @lot_number, order_ = @order_ ,order_date = @order_date, clin = @clin, nsn_number = @nsn_number, item_number = @item_number, item_description = @item_description, qty_ordered = @qty_ordered, u_m = @u_m, due_date = @due_date, customer = @customer, contract_number = @contract_number, date_open = @date_open, date_start = @date_start, date_closed = @date_closed, status_ = @status_, comments = @comments, qr_lot_generated = @qr_lot_generated, is_printed = @is_printed, production_system_name = @production_system_name WHERE lot_number = @lot_number')
     return input.recordsets;
   }
