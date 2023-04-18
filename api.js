@@ -31,6 +31,7 @@ const config = {
 //==========================================================
 //Helper Functions
 
+
 async function getTable(tableName) {
   try {
     let pool = await sql.connect(config);
@@ -58,7 +59,7 @@ async function getMaxID() {
   try {
     let pool = await sql.connect(config);
     let rows = await pool.request().query('SELECT MAX(id) FROM QR');
-    return rows.recordsets;
+    return rows.recordsets[0][0]['']
   }
   catch (error) {
     console.log(error);
@@ -70,21 +71,15 @@ async function Upload_Lots(data) {
   for (let i = 0; i < length; i++) {
     data[i].is_printed = 0
     data[i].qr_lot_generated = 0
-    postLots(data[i])
-  }
-  createQRLots()
-}
-
-async function createQRLot(lot) {
-  try {
-    let pool = await sql.connect(config);
-    let input = await pool.request()
-
-  }
-  catch (error) {
-    console.log(error)
+    postLot(data[i])
+    populateQRLots(data)
   }
 }
+
+async function populateQRLots(data) {
+
+}
+
 
 // Post Helper Functions
 async function postProduction_System(data) {
@@ -103,7 +98,7 @@ async function postProduction_System(data) {
   }
 }
 
-async function postLots(data) {
+async function postLot(data) {
   console.log(data)
   try {
     let pool = await sql.connect(config);
@@ -351,6 +346,14 @@ app.post('/Upload_Lots', function (req, res) {
   console.log('LOT SHEET UPLOADED')
 })
 
+app.post('/Generate_Single_Lot', function (req, res) {
+  console.log('MANUAL QR LOT GENERATE REQUEST RECEIVED')
+  let data = { ...req.body }
+  createQRLot(data)
+  res.end();
+  console.log('MANUAL QR LOT GENERATED')
+})
+
 //POST Requests for Rows
 app.post('/Production_Systems', function (req, res) {
   console.log('NEW PRODUCTION SYSTEM SUCCESSFULY RECEIVED')
@@ -371,7 +374,7 @@ app.post('/QR', function (req, res) {
 app.post('/Lots', function (req, res) {
   console.log('NEW LOT SUCCESSFULY RECEIVED')
   let data = { ...req.body }
-  postLots(data)
+  postLot(data)
   res.end();
   console.log('NEW LOT SUCCESSFULY CREATED')
 });
