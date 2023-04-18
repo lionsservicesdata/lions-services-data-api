@@ -72,6 +72,7 @@ async function Upload_Lots(data) {
     data[i].qr_lot_generated = 0
     postLots(data[i])
   }
+  createQRLots()
 }
 
 async function createQRLot(lot) {
@@ -331,11 +332,15 @@ app.post('/QRSCAN', function (req, res) {
 });
 
 app.get('/MaxID', (req, res) => {
-  console.log('GET Request Received')
-  getMaxID().then((data) => {
-    res.send(data[0]);
-  })
-  console.log('GET Response Sent')
+  try {
+    console.log('GET Request Received')
+    getMaxID().then((data) => {
+      res.send(data[0]);
+    })
+    console.log('GET Response Sent')
+  } catch (e) {
+    console.log(e)
+  }
 });
 
 app.post('/Upload_Lots', function (req, res) {
@@ -434,35 +439,51 @@ app.post('/Delete_Control_Stations', function (req, res) {
 //GET Requests for tables
 
 app.get('/QR', (req, res) => {
-  console.log('GET Request Received')
-  getTable('QR').then((data) => {
-    res.send(data[0]);
-  })
-  console.log('GET Response Sent')
+  try {
+    console.log('GET Request Received')
+    getTable('QR').then((data) => {
+      res.send(data[0]);
+    })
+    console.log('GET Response Sent')
+  } catch (e) {
+    console.log(e)
+  }
 });
 
 app.get('/Production_Systems', (req, res) => {
-  console.log('GET Request Received')
-  getTable('Production_Systems').then((data) => {
-    res.send(data[0]);
-  })
-  console.log('GET Response Sent')
+  try {
+    console.log('GET Request Received')
+    getTable('Production_Systems').then((data) => {
+      res.send(data[0]);
+    })
+    console.log('GET Response Sent')
+  } catch (e) {
+    console.log(e)
+  }
 });
 
 app.get('/Control_Stations', (req, res) => {
-  console.log('GET Request Received')
-  getTable('Control_Stations').then((data) => {
-    res.send(data[0]);
-  })
-  console.log('GET Response Sent')
+  try {
+    console.log('GET Request Received')
+    getTable('Control_Stations').then((data) => {
+      res.send(data[0]);
+    })
+    console.log('GET Response Sent')
+  } catch (e) {
+    console.log(e)
+  }
 });
 
 app.get('/Lots', (req, res) => {
-  console.log('GET Request Received')
-  getTable('Lots').then((data) => {
-    res.send(data[0]);
-  })
-  console.log('GET Response Sent')
+  try {
+    console.log('GET Request Received')
+    getTable('Lots').then((data) => {
+      res.send(data[0]);
+    })
+    console.log('GET Response Sent')
+  } catch (e) {
+    console.log(e)
+  }
 });
 
 //API END\\
