@@ -72,11 +72,15 @@ async function Upload_Lots(data) {
     data[i].is_printed = 0
     data[i].qr_lot_generated = 0
     postLot(data[i])
-    populateQRLots(data)
   }
+  populateQRLots(data)
 }
 
 async function populateQRLots(data) {
+
+}
+
+async function createQRLot(lot) {
 
 }
 
@@ -190,7 +194,7 @@ async function updateProduction_System(data) {
 }
 
 async function updateLots(data) {
-  console.log(data)
+  console.log(data.qr_lot_generated)
   try {
     let pool = await sql.connect(config);
     let input = await pool.request()
@@ -213,8 +217,9 @@ async function updateLots(data) {
       .input('comments', sql.NVarChar, String(data.comments))
       .input('qr_lot_generated', sql.Int, data.qr_lot_generated)
       .input('is_printed', sql.Int, data.is_printed)
-      .input('production_system_name', String(sql.NVarChar, data.production_system_name))
+      .input('production_system_name', sql.NVarChar, String(data.production_system_name))
       .query('UPDATE Lots SET lot_number = @lot_number, order_ = @order_ ,order_date = @order_date, clin = @clin, nsn_number = @nsn_number, item_number = @item_number, item_description = @item_description, qty_ordered = @qty_ordered, u_m = @u_m, due_date = @due_date, customer = @customer, contract_number = @contract_number, date_open = @date_open, date_start = @date_start, date_closed = @date_closed, status_ = @status_, comments = @comments, qr_lot_generated = @qr_lot_generated, is_printed = @is_printed, production_system_name = @production_system_name WHERE lot_number = @lot_number')
+      
     return input.recordsets;
   }
   catch (error) {
@@ -399,6 +404,7 @@ app.post('/Update_Production_Systems', function (req, res) {
 app.post('/Update_Lots', function (req, res) {
   console.log('UPDATE LOT SUCCESSFULY RECEIVED')
   let data = { ...req.body }
+  console.log(data)
   updateLots(data)
   res.end();
   console.log('LOT SUCCESSFULY UPDATED')
