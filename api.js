@@ -74,6 +74,18 @@ async function getTable(tableName) {
   }
 }
 
+async function getQRTable() {
+  try {
+    let pool = await sql.connect(config);
+    let rows = await pool.request().query('SELECT * FROM QR ORDER BY id');
+    return rows.recordsets;
+  }
+  catch (error) {
+    console.log(error);
+  }
+}
+
+
 async function getStationsGivenProductionSystems(production_system_name) {
   try {
     let pool = await sql.connect(config);
@@ -102,7 +114,7 @@ async function updateLotGenerated(lot_number) {
   try {
     let pool = await sql.connect(config);
     let input = await pool.request()
-      .query("UPDATE [dbo].[Lots] SET qr_lot_generated = 1 WHERE lot_number = '" + lot_number+"'")
+      .query("UPDATE [dbo].[Lots] SET qr_lot_generated = 1 WHERE lot_number = '" + lot_number + "'")
     return input.recordsets;
   } catch (error) {
     console.log(error)
@@ -123,7 +135,7 @@ async function getMaxID() {
 async function getLotFromLotNumber(lot_number) {
   try {
     let pool = await sql.connect(config);
-    let rows = await pool.request().query("SELECT * FROM Lots WHERE lot_number = '" + lot_number+"'");
+    let rows = await pool.request().query("SELECT * FROM Lots WHERE lot_number = '" + lot_number + "'");
     console.log(rows.recordsets[0][0])
     return rows.recordsets[0][0]
   }
@@ -150,20 +162,22 @@ async function createQRLot(lot_number) {
   getLotFromLotNumber(lot_number).then((lot) => {
     getTable("Production_Systems").then((productionSystems) => {
       getStationsGivenProductionSystems(productionSystems[0][0].production_system_name).then((stations) => {
-        stations[0].forEach(station => {
-          console.log(station)
-          createQRStationLot(station, lot)
+        getMaxID().then((initialMaxId) => {
+          station_index = 0
+          stations[0].forEach(station => {
+            createQRStationLot(station, lot, initialMaxId, station_index)
+            station_index = station_index + 1
+          })
+          updateLotGenerated(lot_number)
         })
-        updateLotGenerated(lot_number)
       })
     })
   })
 }
 
-async function createQRStationLot(station, lot) {
-  getMaxID().then((maxID) => {
-    numberOfQRCodes = Math.floor(Number(lot.qty_ordered) / Number(station.bundle_size))
-    for (let i = maxID + 1; i < maxID + 1 + numberOfQRCodes; i++) {
+async function createQRStationLot(station, lot, initialMaxId, station_index) {
+  numberOfQRCodes = Math.floor(Number(lot.qty_ordered) / Number(station.bundle_size))
+    for (let i = initialMaxId + numberOfQRCodes*station_index + 1; i < initialMaxId + 1 + numberOfQRCodes*(station_index+1); i++) {
       let temp = new QR(
         i,
         station.station_name,
@@ -173,12 +187,10 @@ async function createQRStationLot(station, lot) {
         0,
         getSQLDateTime(),
         '1900-01-01 00:00:00',
-        station.production_system_name.concat("-", lot.lot_number, "-", station.station_name, i)
+        station.production_system_name.concat("-", lot.lot_number, "-", station.station_name, "-",i)
       )
-      console.log(temp)
       postQR(temp)
     }
-  })
 }
 
 // Post Helper Functions
@@ -545,7 +557,7 @@ app.post('/Delete_Control_Stations', function (req, res) {
 app.get('/QR', (req, res) => {
   try {
     console.log('GET Request Received')
-    getTable('QR').then((data) => {
+    getQRTable().then((data) => {
       res.send(data[0]);
     })
     console.log('GET Response Sent')
