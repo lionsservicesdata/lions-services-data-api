@@ -63,6 +63,10 @@ const getSQLDateTime = () => {
   return datetime
 }
 
+function ExcelDateToJSDate(date) {
+  return new Date(Math.round((date - 25569)*86400*1000));
+}
+
 async function getTable(tableName) {
   try {
     let pool = await sql.connect(config);
@@ -133,6 +137,7 @@ async function getMaxID() {
 }
 
 async function getLotFromLotNumber(lot_number) {
+  console.log(lot_number)
   try {
     let pool = await sql.connect(config);
     let rows = await pool.request().query("SELECT * FROM Lots WHERE lot_number = '" + lot_number + "'");
@@ -145,6 +150,7 @@ async function getLotFromLotNumber(lot_number) {
 }
 
 async function Upload_Lots(data) {
+  console.log(data)
   const length = Object.keys(data).length
   for (let i = 0; i < length; i++) {
     data[i].is_printed = 0
@@ -159,6 +165,7 @@ async function populateQRLots(data) {
 }
 
 async function createQRLot(lot_number) {
+  console.log(lot_number)
   getLotFromLotNumber(lot_number).then((lot) => {
     getTable("Production_Systems").then((productionSystems) => {
       getStationsGivenProductionSystems(productionSystems[0][0].production_system_name).then((stations) => {
@@ -211,6 +218,7 @@ async function postProduction_System(data) {
 }
 
 async function postLot(data) {
+  console.log(data)
   try {
     let pool = await sql.connect(config);
     //Potentially Iterate over input with data. Data becomes huge array of all of them.
