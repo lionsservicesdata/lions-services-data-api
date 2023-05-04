@@ -78,6 +78,17 @@ async function getTable(tableName) {
   }
 }
 
+async function isScanned(id) {
+  try {
+    let pool = await sql.connect(config);
+    let rows = await pool.request().query('SELECT scanned FROM QR WHERE id = '+id);
+    return rows.recordsets;
+  }
+  catch (error) {
+    console.log(error);
+  }
+}
+
 async function getQRTable() {
   try {
     let pool = await sql.connect(config);
@@ -441,7 +452,12 @@ async function deleteControl_Stations(data) {
 app.post('/QRSCAN', function (req, res) {
   console.log('QR SCAN RECEIVED')
   let data = { ...req.body }
-  scanQR(data)
+  isScanned(data.id).then((r) => {
+    if (r[0][0].scanned == 0) {
+      scanQR(data)
+    }
+  })
+  
   res.end();
   console.log('QR SCAN SUCCESSFUL')
 });
