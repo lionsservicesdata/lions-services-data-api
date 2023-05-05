@@ -1,9 +1,5 @@
 
 //Initializations
-const natalie_sql = 'seniordesigndata.database.windows.net'
-var server = ''
-server = natalie_sql
-
 const bodyParser = require('body-parser')
 const express = require('express');
 const app = express();
@@ -15,10 +11,10 @@ app.use(bodyParser.json());
 app.use(cors())
 
 const config = {
-  user: 'CloudSA2d97a179', // sql user
-  password: '8w0Zq@^*^8C!', //sql user password
-  server: server,
-  database: 'Webapp',
+  user: 'unccdbadmin', // sql user
+  password: 'ti3YZeWVryX2', //sql user password
+  server: '10.17.99.110',
+  database: 'LSI_ProductionDataCollection',
   options: {
     trustedconnection: true,
     enableArithAbort: true,
